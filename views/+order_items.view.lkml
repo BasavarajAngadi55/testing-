@@ -34,10 +34,8 @@ view: +order_items {
 
   dimension: is_current_mtd {
     type: yesno
-    sql: |  # <-- ADD THIS PIPE SYMBOL
-          DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', CURRENT_DATE())
-          AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM CURRENT_DATE())
-        ;;
+    sql: DATE_TRUNC(${created_date}, MONTH) = DATE_TRUNC(CURRENT_DATE(), MONTH)
+      AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM CURRENT_DATE()) ;;
   }
 
   measure: total_sales_mtd_today {
