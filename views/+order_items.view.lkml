@@ -7,15 +7,15 @@ view: +order_items {
     value_format_name: usd_0
   }
 
-measure: LastYearSales {
-type: period_over_period
-sql: ${order_items.sale_price};;
-period: year
-kind: previous
-value_format_name: usd_0
-based_on: sale_price
-based_on_time: created_year
+  measure: LastYearSales {
+    type: period_over_period
+    based_on: total_sale_price  # <-- This field must be a valid aggregate measure
+    based_on_time: created_year
+    period: year
+    kind: previous
+    value_format_name: usd_0
+  }
 
-}
+
 
 }
