@@ -32,8 +32,6 @@ view: +order_items {
     sql: {% date_end date_anchor %} ;;
   }
 
-# This will flag all rows that belong to the MTD period,
-# based on the day number of the anchor date.
   dimension: is_current_mtd {
     type: yesno
     sql:
