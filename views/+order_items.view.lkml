@@ -17,11 +17,10 @@ view: +order_items {
   }
 
 
-# 1. This filter field is what the user interacts with in the Explore
-  filter: date_anchor {
+# This is the filter the user selects in the Explore (e.g., 'is before 2025-10-16')
+  filter: mtd_anchor_date {
     type: date
-    # Always filter on this in the Explore (e.g., set to 'yesterday')
-    # but allow the user to change it to any date.
+    label: "MTD End Date Selector"
   }
 
 # 2. This helper dimension captures the last date the user selected in the filter
