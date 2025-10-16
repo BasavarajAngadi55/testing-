@@ -37,21 +37,21 @@ view: +order_items {
       AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM CURRENT_DATE()) ;;
   }
 
-  measure: total_sales_mtd_today {
+  measure: total_sales_mtd_dynamic {
     type: sum
-    sql: ${sale_price} ;;
-    filters: {
-      field: is_current_mtd
-      value: "yes"
-    }
+    sql: |
+          SUM(
+            CASE
+              WHEN
+                # 1. Date is in the same month as the end date of the filter:
+                DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', DATE({% date_end mtd_anchor_date %}))
+                # 2. Date is less than or equal to the end date of the filter:
+                AND ${created_date} <= DATE({% date_end mtd_anchor_date %})
+              THEN ${sale_price}
+              ELSE NULL
+            END
+          )
+        ;;
     value_format_name: usd_0
   }
-
-
-
-
-
-
-
-
-}
+  }
