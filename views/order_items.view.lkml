@@ -59,18 +59,28 @@ view: order_items {
     drill_fields: [detail*]
   }
 
+
+    measure: Avg_Sales_price {
+      type: average
+      # This is correct because it references the dimension: sale_price above
+      sql: ${sale_price} ;;
+    }
+
+
+
+
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-	id,
-	users.last_name,
-	users.id,
-	users.first_name,
-	inventory_items.id,
-	inventory_items.product_name,
-	products.name,
-	products.id
-	]
+  id,
+  users.last_name,
+  users.id,
+  users.first_name,
+  inventory_items.id,
+  inventory_items.product_name,
+  products.name,
+  products.id
+  ]
   }
 
 }
