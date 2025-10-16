@@ -34,8 +34,8 @@ view: +order_items {
 
   dimension: is_current_mtd {
     type: yesno
-    sql:
-          DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', CURRENT_DATE()) # <-- No semicolon
+    sql: |  # <-- ADD THIS PIPE SYMBOL
+          DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', CURRENT_DATE())
           AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM CURRENT_DATE())
         ;;
   }
