@@ -36,23 +36,22 @@ view: +order_items {
 # based on the day number of the anchor date.
   dimension: is_current_mtd {
     type: yesno
-    sql:
-    DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', ${current_anchor_date})
-    AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM ${current_anchor_date})
-    ;;
+    sql: |
+          DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', CURRENT_DATE())
+          AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM CURRENT_DATE())
+        ;;
   }
 
-  measure: total_sales_mtd_dynamic {
+  measure: total_sales_mtd_today {
     type: sum
     sql: ${sale_price} ;;
-    value_format_name: usd_0
-
-    # Only sum the sales where the MTD flag is TRUE
     filters: {
       field: is_current_mtd
       value: "yes"
     }
+    value_format_name: usd_0
   }
+
 
 
 
