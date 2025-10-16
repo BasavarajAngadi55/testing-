@@ -3,7 +3,7 @@ include: "/views/order_items.view"
 view: +order_items {
   measure: Avg_Sales_price {
     type: average
-    # CORRECT WAY: Refer to the dimension within the current view
+    # This is correct because it references the dimension: sale_price above
     sql: ${sale_price} ;;
   }
 }
