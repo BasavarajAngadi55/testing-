@@ -36,7 +36,7 @@ view: +order_items {
 # based on the day number of the anchor date.
   dimension: is_current_mtd {
     type: yesno
-    sql: |
+    sql:
           DATE_TRUNC('month', ${created_date}) = DATE_TRUNC('month', CURRENT_DATE())
           AND EXTRACT(DAY FROM ${created_date}) <= EXTRACT(DAY FROM CURRENT_DATE())
         ;;
