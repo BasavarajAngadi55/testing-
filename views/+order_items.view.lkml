@@ -16,22 +16,24 @@ view: +order_items {
     value_format_name: usd_0
   }
 
-
-# Dynamic MTD measure using CURRENT_DATE() in IST
+# Dynamic MTD measure using the selected created_date context
   measure: total_sales_mtd_dynamic {
     type: sum
     sql:
       CASE
         WHEN
-          -- 1. Ensure the order date is in the same month as the current date
-          DATE_TRUNC(${created_date}, MONTH) = DATE_TRUNC(CURRENT_DATE('Asia/Kolkata'), MONTH)
-          -- 2. Ensure the order date is on or before the current date
-          AND ${created_date} <= CURRENT_DATE('Asia/Kolkata')
+          -- 1. Ensure the order date is in the same month as the maximum selected date in context
+          DATE_TRUNC(${created_date}, MONTH) = (
+            SELECT DATE_TRUNC(MAX(created_at), MONTH)
+            FROM `thelook.order_items`
+            WHERE created_at <= MAX(${created_date})
+          )
+          -- 2. Ensure the order date is on or before the maximum selected date in context
+          AND ${created_date} <= MAX(${created_date})
         THEN ${sale_price}
         ELSE 0
       END ;;
     value_format_name: usd_0
   }
-
 
   }
