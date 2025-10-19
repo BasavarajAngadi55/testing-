@@ -16,29 +16,17 @@ view: +order_items {
     value_format_name: usd_0
   }
 
-# Filter for user to select the MTD end date
-  filter: mtd_anchor_date {
-    type: date
-    label: "MTD End Date Selector"
-  }
 
-  # Helper dimension to capture the selected end date
-  dimension: current_anchor_date {
-    type: date
-    hidden: yes
-    sql: {% date_end mtd_anchor_date %} ;;
-  }
-
-  # Dynamic MTD measure for total sales up to the selected date
+# Dynamic MTD measure using CURRENT_DATE()
   measure: total_sales_mtd_dynamic {
     type: sum
     sql:
       CASE
         WHEN
-          -- 1. Ensure the order date is in the same month as the selected date
-          DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
-          -- 2. Ensure the order date is on or before the selected date
-          AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
+          -- 1. Ensure the order date is in the same month as the current date
+          DATE_TRUNC(${TABLE}.created_date, MONTH) = DATE_TRUNC(CURRENT_DATE(), MONTH)
+          -- 2. Ensure the order date is on or before the current date
+          AND ${TABLE}.created_date <= CURRENT_DATE()
         THEN ${sale_price}
         ELSE 0
       END ;;
