@@ -24,15 +24,14 @@ view: +order_items {
       CASE
         WHEN
           -- 1. Ensure the order date is in the same month as the current date
-          DATE_TRUNC(${TABLE}.Created_Date, MONTH) = DATE_TRUNC(CURRENT_DATE('Asia/Kolkata'), MONTH)
+          DATE_TRUNC(${TABLE}.created_date, MONTH) = DATE_TRUNC(CURRENT_DATE('Asia/Kolkata'), MONTH)
           -- 2. Ensure the order date is on or before the current date
-          AND ${TABLE}.Created_Date <= CURRENT_DATE('Asia/Kolkata')
+          AND ${TABLE}.created_date <= CURRENT_DATE('Asia/Kolkata')
         THEN ${sale_price}
         ELSE 0
       END ;;
     value_format_name: usd_0
   }
-
 
 
   }
