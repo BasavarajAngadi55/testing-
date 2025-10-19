@@ -16,20 +16,24 @@ view: +order_items {
     value_format_name: usd_0
   }
 
-# Dynamic MTD measure using the selected created_date context
+# Filter for user to select the MTD end date
+  filter: mtd_anchor_date {
+    type: date
+    label: "MTD End Date Selector"
+  }
+
+
+
+  # Dynamic MTD measure for total sales up to the selected date
   measure: total_sales_mtd_dynamic {
     type: sum
     sql:
       CASE
         WHEN
-          -- 1. Ensure the order date is in the same month as the maximum selected date in context
-          DATE_TRUNC(${created_date}, MONTH) = (
-            SELECT DATE_TRUNC(MAX(created_at), MONTH)
-            FROM `thelook.order_items`
-            WHERE created_at <= MAX(${created_date})
-          )
-          -- 2. Ensure the order date is on or before the maximum selected date in context
-          AND ${created_date} <= MAX(${created_date})
+          -- 1. Ensure the order date is in the same month as the selected date
+          DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
+          -- 2. Ensure the order date is on or before the selected date
+          AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
         THEN ${sale_price}
         ELSE 0
       END ;;
