@@ -37,4 +37,18 @@ view: +order_items {
     value_format_name: usd_0
   }
 
+
+
+
+  measure: total_sales_mtd_dynamic_1 {
+    type: sum
+    sql:
+    CASE
+      WHEN DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC(${TABLE}.created_at, MONTH)
+      THEN ${sale_price}
+      ELSE 0
+    END ;;
+  }
+
+
   }
