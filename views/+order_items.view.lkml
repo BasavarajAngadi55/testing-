@@ -16,24 +16,37 @@ view: +order_items {
     value_format_name: usd_0
   }
 
-# Filter for user to select the MTD end date
-  filter: mtd_anchor_date {
+# Use a more generic, descriptive name since it now serves both MTD and QTD
+  filter: sales_period_anchor_date {
     type: date
-    label: "MTD End Date Selector"
+    label: "Sales Period End Date" # The label the end-user sees
   }
 
+# ... then update both measures to use the new filter name:
 
-  # Dynamic MTD measure for total sales up to the selected date
   measure: total_sales_mtd_dynamic {
     type: sum
     sql:
-      CASE
-        WHEN
-          DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
-          AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
-        THEN ${sale_price}
-        ELSE 0
-      END ;;
+    CASE
+      WHEN
+        DATE_TRUNC('month', ${TABLE}.created_at) = DATE_TRUNC('month', {% date_end sales_period_anchor_date %})
+        AND ${TABLE}.created_at <= {% date_end sales_period_anchor_date %}
+      THEN ${sale_price}
+      ELSE 0
+    END ;;
+    value_format_name: usd_0
+  }
+
+  measure: total_sales_qtd_dynamic {
+    type: sum
+    sql:
+    CASE
+      WHEN
+        DATE_TRUNC('quarter', ${TABLE}.created_at) = DATE_TRUNC('quarter', {% date_end sales_period_anchor_date %})
+        AND ${TABLE}.created_at <= {% date_end sales_period_anchor_date %}
+      THEN ${sale_price}
+      ELSE 0
+    END ;;
     value_format_name: usd_0
   }
 
