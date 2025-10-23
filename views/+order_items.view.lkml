@@ -29,15 +29,16 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        -- Convert created_at to DATE for comparison
-        DATE_TRUNC(DATE(${TABLE}.created_at), MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
-        AND DATE(${TABLE}.created_at) <= {% date_end mtd_anchor_date %}
+        -- Default to today's date if filter not selected
+        DATE_TRUNC(DATE(${TABLE}.created_at), MONTH) = DATE_TRUNC(
+          COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE()), MONTH)
+        AND DATE(${TABLE}.created_at) <= COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE())
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
     label: "Total Sales (MTD Dynamic)"
-    description: "MTD total sales based on the selected end date"
+    description: "MTD total sales based on the selected end date or today if not selected"
   }
 
 # Dynamic QTD measure for total sales up to the selected date
@@ -46,15 +47,15 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        -- Convert created_at to DATE for comparison
-        DATE_TRUNC(DATE(${TABLE}.created_at), QUARTER) = DATE_TRUNC({% date_end mtd_anchor_date %}, QUARTER)
-        AND DATE(${TABLE}.created_at) <= {% date_end mtd_anchor_date %}
+        DATE_TRUNC(DATE(${TABLE}.created_at), QUARTER) = DATE_TRUNC(
+          COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE()), QUARTER)
+        AND DATE(${TABLE}.created_at) <= COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE())
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
     label: "Total Sales (QTD Dynamic)"
-    description: "QTD total sales based on the selected end date"
+    description: "QTD total sales based on the selected end date or today if not selected"
   }
 
 
