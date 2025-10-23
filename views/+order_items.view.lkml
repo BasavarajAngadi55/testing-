@@ -75,7 +75,7 @@ view: +order_items {
               DATE(EXTRACT(YEAR FROM COALESCE({% date_start global_date_filter %}, CURRENT_DATE())), 1, 1)
             {% endif %}
           AND ${created_date} <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
-          THEN ${total_sale_price}
+          THEN ${sale_price}
           ELSE 0
         END
       )
