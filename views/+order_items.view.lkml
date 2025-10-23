@@ -97,15 +97,18 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        DATE(${TABLE}.created_at) >= DATE_SUB(DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), INTERVAL 6 DAY)
-        AND DATE(${TABLE}.created_at) < DATE_ADD(DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), INTERVAL 1 DAY)
+        DATE(${TABLE}.created_at) BETWEEN
+          DATE_SUB(DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), INTERVAL 6 DAY)
+          AND DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
     label: "Total Sales (Last 7 Days Dynamic)"
-    description: "Shows total sales for the selected date and the 6 previous days (exactly 7 days total)"
+    description: "Shows total sales for the selected date and the 6 previous days (exactly 7 days total, ending on the selected date)"
   }
+
+
 
 
 
