@@ -29,10 +29,10 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        -- Default to today's date if filter not selected
+        -- Convert all to DATE and handle NULL by using today's date
         DATE_TRUNC(DATE(${TABLE}.created_at), MONTH) = DATE_TRUNC(
-          COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE()), MONTH)
-        AND DATE(${TABLE}.created_at) <= COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE())
+          DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), MONTH)
+        AND DATE(${TABLE}.created_at) <= DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
       THEN ${sale_price}
       ELSE 0
     END ;;
@@ -48,8 +48,8 @@ view: +order_items {
     CASE
       WHEN
         DATE_TRUNC(DATE(${TABLE}.created_at), QUARTER) = DATE_TRUNC(
-          COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE()), QUARTER)
-        AND DATE(${TABLE}.created_at) <= COALESCE({% date_end mtd_anchor_date %}, CURRENT_DATE())
+          DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), QUARTER)
+        AND DATE(${TABLE}.created_at) <= DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
       THEN ${sale_price}
       ELSE 0
     END ;;
@@ -57,7 +57,6 @@ view: +order_items {
     label: "Total Sales (QTD Dynamic)"
     description: "QTD total sales based on the selected end date or today if not selected"
   }
-
 
 # Global date filter (users pick range here—e.g., Oct 1-23, 2025)
   filter: global_date_filter {
