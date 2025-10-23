@@ -20,7 +20,7 @@ view: +order_items {
   filter: mtd_anchor_date {
     type: date
     label: "MTD/QTD End Date Selector"
-    description: "Select a date to calculate MTD and QTD totals up to this date"
+    description: "Select a date to calculate MTD, QTD, WTD, and YTD totals up to this date"
   }
 
 # Dynamic MTD measure for total sales up to the selected date
@@ -29,7 +29,6 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        -- Convert all to DATE and handle NULL by using today's date
         DATE_TRUNC(DATE(${TABLE}.created_at), MONTH) = DATE_TRUNC(
           DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), MONTH)
         AND DATE(${TABLE}.created_at) <= DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
@@ -57,6 +56,41 @@ view: +order_items {
     label: "Total Sales (QTD Dynamic)"
     description: "QTD total sales based on the selected end date or today if not selected"
   }
+
+# Dynamic WTD measure for total sales up to the selected date
+  measure: total_sales_wtd_dynamic {
+    type: sum
+    sql:
+    CASE
+      WHEN
+        DATE_TRUNC(DATE(${TABLE}.created_at), WEEK(MONDAY)) = DATE_TRUNC(
+          DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), WEEK(MONDAY))
+        AND DATE(${TABLE}.created_at) <= DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
+      THEN ${sale_price}
+      ELSE 0
+    END ;;
+    value_format_name: usd_0
+    label: "Total Sales (WTD Dynamic)"
+    description: "WTD total sales based on the selected end date or today if not selected"
+  }
+
+# Dynamic YTD measure for total sales up to the selected date
+  measure: total_sales_ytd_dynamic {
+    type: sum
+    sql:
+    CASE
+      WHEN
+        DATE_TRUNC(DATE(${TABLE}.created_at), YEAR) = DATE_TRUNC(
+          DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), YEAR)
+        AND DATE(${TABLE}.created_at) <= DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
+      THEN ${sale_price}
+      ELSE 0
+    END ;;
+    value_format_name: usd_0
+    label: "Total Sales (YTD Dynamic)"
+    description: "YTD total sales based on the selected end date or today if not selected"
+  }
+
 
 # Global date filter (users pick range here—e.g., Oct 1-23, 2025)
   filter: global_date_filter {
