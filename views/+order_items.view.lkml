@@ -60,21 +60,21 @@ view: +order_items {
     default_value: "mtd"  # Starts with MTD
   }
 
-# Dynamic sales measure (adapted from reference: period comparison + <= end)
+  # Dynamic sales measure (fixed types: cast created_at to DATE for comparisons)
   measure: dynamic_sales {
     type: sum
     sql:
       CASE
         WHEN
           {% if metric_selector._parameter_value == 'mtd' %}
-            DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC(COALESCE({% date_end global_date_filter %}, CURRENT_DATE()), MONTH)
-            AND ${TABLE}.created_at <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
+            DATE_TRUNC(DATE(${TABLE}.created_at), MONTH) = DATE_TRUNC(COALESCE({% date_end global_date_filter %}, CURRENT_DATE()), MONTH)
+            AND DATE(${TABLE}.created_at) <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
           {% elsif metric_selector._parameter_value == 'qtd' %}
-            DATE_TRUNC(${TABLE}.created_at, QUARTER) = DATE_TRUNC(COALESCE({% date_end global_date_filter %}, CURRENT_DATE()), QUARTER)
-            AND ${TABLE}.created_at <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
+            DATE_TRUNC(DATE(${TABLE}.created_at), QUARTER) = DATE_TRUNC(COALESCE({% date_end global_date_filter %}, CURRENT_DATE()), QUARTER)
+            AND DATE(${TABLE}.created_at) <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
           {% elsif metric_selector._parameter_value == 'ytd' %}
             EXTRACT(YEAR FROM ${TABLE}.created_at) = EXTRACT(YEAR FROM COALESCE({% date_end global_date_filter %}, CURRENT_DATE()))
-            AND ${TABLE}.created_at <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
+            AND DATE(${TABLE}.created_at) <= COALESCE({% date_end global_date_filter %}, CURRENT_DATE())
           {% endif %}
         THEN ${sale_price}
         ELSE 0
@@ -83,6 +83,5 @@ view: +order_items {
     value_format_name: usd
     description: "Sale price for selected period up to global date filter end (defaults to today: Oct 23, 2025)"
   }
-
 
   }
