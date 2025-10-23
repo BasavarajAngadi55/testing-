@@ -16,16 +16,11 @@ view: +order_items {
     value_format_name: usd_0
   }
 
-# Use a more generic, descriptive name since it now serves both MTD and QTD
-  filter: sales_period_anchor_date {
-    type: date
-    label: "Sales Period End Date" # The label the end-user sees
-  }
-
 # Filter for user to select the MTD/QTD end date
   filter: mtd_anchor_date {
     type: date
     label: "MTD/QTD End Date Selector"
+    description: "Select a date to calculate MTD and QTD totals up to this date"
   }
 
 # Dynamic MTD measure for total sales up to the selected date
@@ -34,12 +29,15 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
-        AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
+        -- Convert created_at to DATE for comparison
+        DATE_TRUNC(DATE(${TABLE}.created_at), MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
+        AND DATE(${TABLE}.created_at) <= {% date_end mtd_anchor_date %}
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
+    label: "Total Sales (MTD Dynamic)"
+    description: "MTD total sales based on the selected end date"
   }
 
 # Dynamic QTD measure for total sales up to the selected date
@@ -48,12 +46,15 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        DATE_TRUNC(${TABLE}.created_at, QUARTER) = DATE_TRUNC({% date_end mtd_anchor_date %}, QUARTER)
-        AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
+        -- Convert created_at to DATE for comparison
+        DATE_TRUNC(DATE(${TABLE}.created_at), QUARTER) = DATE_TRUNC({% date_end mtd_anchor_date %}, QUARTER)
+        AND DATE(${TABLE}.created_at) <= {% date_end mtd_anchor_date %}
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
+    label: "Total Sales (QTD Dynamic)"
+    description: "QTD total sales based on the selected end date"
   }
 
 
