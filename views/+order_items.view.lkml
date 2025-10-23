@@ -34,8 +34,7 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        -- **FIX:** Check the order of arguments for BigQuery's DATE_TRUNC
-        DATE_TRUNC(MONTH, ${TABLE}.created_at) = DATE_TRUNC(MONTH, {% date_end mtd_anchor_date %})
+        DATE_TRUNC(${TABLE}.created_at, MONTH) = DATE_TRUNC({% date_end mtd_anchor_date %}, MONTH)
         AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
       THEN ${sale_price}
       ELSE 0
@@ -49,14 +48,14 @@ view: +order_items {
     sql:
     CASE
       WHEN
-        -- **FIX:** Check the order of arguments for BigQuery's DATE_TRUNC
-        DATE_TRUNC(QUARTER, ${TABLE}.created_at) = DATE_TRUNC(QUARTER, {% date_end mtd_anchor_date %})
+        DATE_TRUNC(${TABLE}.created_at, QUARTER) = DATE_TRUNC({% date_end mtd_anchor_date %}, QUARTER)
         AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
   }
+
 
 # Global date filter (users pick range here—e.g., Oct 1-23, 2025)
   filter: global_date_filter {
