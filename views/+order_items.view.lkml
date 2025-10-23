@@ -22,28 +22,36 @@ view: +order_items {
     label: "Sales Period End Date" # The label the end-user sees
   }
 
-# ... then update both measures to use the new filter name:
+# Filter for user to select the MTD/QTD end date
+  filter: mtd_anchor_date {
+    type: date
+    label: "MTD/QTD End Date Selector"
+  }
 
+# Dynamic MTD measure for total sales up to the selected date
   measure: total_sales_mtd_dynamic {
     type: sum
     sql:
     CASE
       WHEN
-        DATE_TRUNC('month', ${TABLE}.created_at) = DATE_TRUNC('month', {% date_end sales_period_anchor_date %})
-        AND ${TABLE}.created_at <= {% date_end sales_period_anchor_date %}
+        -- **FIX:** Check the order of arguments for BigQuery's DATE_TRUNC
+        DATE_TRUNC(MONTH, ${TABLE}.created_at) = DATE_TRUNC(MONTH, {% date_end mtd_anchor_date %})
+        AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
   }
 
+# Dynamic QTD measure for total sales up to the selected date
   measure: total_sales_qtd_dynamic {
     type: sum
     sql:
     CASE
       WHEN
-        DATE_TRUNC('quarter', ${TABLE}.created_at) = DATE_TRUNC('quarter', {% date_end sales_period_anchor_date %})
-        AND ${TABLE}.created_at <= {% date_end sales_period_anchor_date %}
+        -- **FIX:** Check the order of arguments for BigQuery's DATE_TRUNC
+        DATE_TRUNC(QUARTER, ${TABLE}.created_at) = DATE_TRUNC(QUARTER, {% date_end mtd_anchor_date %})
+        AND ${TABLE}.created_at <= {% date_end mtd_anchor_date %}
       THEN ${sale_price}
       ELSE 0
     END ;;
