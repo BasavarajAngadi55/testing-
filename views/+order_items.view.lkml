@@ -92,22 +92,21 @@ view: +order_items {
   }
 
 
-#  Dynamic Last 7 Days measure
   measure: total_sales_last_7_days_dynamic {
     type: sum
     sql:
     CASE
       WHEN
-        DATE(${TABLE}.created_at)
-        BETWEEN DATE_SUB(DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), INTERVAL 6 DAY)
-        AND DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP()))
+        DATE(${TABLE}.created_at) >= DATE_SUB(DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), INTERVAL 6 DAY)
+        AND DATE(${TABLE}.created_at) < DATE_ADD(DATE(COALESCE({% date_end mtd_anchor_date %}, CURRENT_TIMESTAMP())), INTERVAL 1 DAY)
       THEN ${sale_price}
       ELSE 0
     END ;;
     value_format_name: usd_0
     label: "Total Sales (Last 7 Days Dynamic)"
-    description: "Shows total sales from the selected date going 7 days back (including the selected date)"
+    description: "Shows total sales for the selected date and the 6 previous days (exactly 7 days total)"
   }
+
 
 
 # Global date filter (users pick range here—e.g., Oct 1-23, 2025)
