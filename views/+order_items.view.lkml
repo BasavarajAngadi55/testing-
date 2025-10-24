@@ -15,8 +15,27 @@ view: +order_items {
     kind: previous
     value_format_name: usd_0
   }
+  measure: last_year_sales_styled {
+    label: "LAST YEAR SALES (STYLED)" # Title displayed on the dashboard tile
+    type: number
+    sql: ${LastYearSales} ;;          # Pulls the calculated value from the POP measure
 
+    html:
+    # Outer div uses flexbox to align the icon and text horizontally and center them vertically
+    '<div style="display:flex; align-items:center;">'
+      # Icon with specific dimensions and a small right margin for spacing
+      '<img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" width="20" height="20" style="margin-right:5px;">'
 
+      # Span for text styling: color and bold font
+      '<span style="color:#1E90FF; font-weight:bold;">'
+
+      # Liquid variable renders the value with the 'usd_0' format defined in the base measure
+      '{{ rendered_value }}'
+
+      '</span>'
+      '</div>'
+      ;;
+  }
 
 
 
