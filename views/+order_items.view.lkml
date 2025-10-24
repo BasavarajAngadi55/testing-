@@ -16,6 +16,25 @@ view: +order_items {
     value_format_name: usd_0
   }
 
+  measure: LastYearSales_HTML {
+    type: string
+    sql:
+    CONCAT(
+      '<div style="display:flex; align-items:center;">',
+      '<img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" width="20" height="20" style="margin-right:5px;">',
+      '<span style="color:#1E90FF; font-weight:bold;">',
+      TO_CHAR(${LastYearSales}, '$999,999'),
+      '</span>',
+      '</div>'
+    )
+  ;;
+    html: YES
+  }
+
+
+
+
+
 # Filter for user to select the MTD/QTD end date
   filter: mtd_anchor_date {
     type: date
