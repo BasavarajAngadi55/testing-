@@ -7,6 +7,12 @@ view: +order_items {
     value_format_name: usd_0
   }
 
+  measure: total_cost {
+    type: sum
+    sql: ${inventory_items.cost} ;;
+    description: "Calculates the total cost of inventory items."
+  }
+
   measure: LastYearSales {
     type: period_over_period
     based_on: total_sale_price  # <-- This field must be a valid aggregate measure
