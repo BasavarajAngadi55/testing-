@@ -189,4 +189,32 @@ view: +order_items {
     description: "Sale price for selected period up to global date filter end (defaults to today: Oct 23, 2025)"
   }
 
+  measure: total_revenue {
+    label: "Total Revenue"
+    type: sum
+    sql: ${TABLE}.sale_price;;
+    value_format: "$#,##0.0,,\" K\"" # Optional: Keeps the K formatting
+
+    # --- Start of Custom HTML/Liquid ---
+    html: |
+          <div style="
+            background-color: #26a57c;        /* Green background for the main box */
+            color: white;                     /* White text for better contrast */
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 5px;
+          ">
+            <span style="font-size: 32px; font-weight: bold;">
+              {{ rendered_value }}
+            </span>
+          </div>
+          ;;
+        # --- End of Custom HTML/Liquid ---
+    }
+
+
+
+
   }
