@@ -13,6 +13,15 @@ view: +order_items {
     description: "Calculates the total cost of inventory items."
   }
 
+# New measure: Sales minus Cost
+  measure: margin {
+    type: number
+    sql: ${total_sale_price} - ${total_cost} ;;
+    value_format_name: usd_0
+    description: "Calculates profit by subtracting total cost from total sales."
+  }
+
+
   measure: LastYearSales {
     type: period_over_period
     based_on: total_sale_price  # <-- This field must be a valid aggregate measure
