@@ -1,29 +1,25 @@
 view: agg_table {
-  # This uses a Native Derived Table (NDT) via explore_source
   derived_table: {
-    # The 'explore_source' runs a query against the 'order_items' explore
-    explore_source: order_items {
-      # The dimensions (GROUP BY)
-      column: created_month {}
+    # Looker will build this table dynamically
+    sql:
+      SELECT
+        FORMAT_TIMESTAMP('%Y-%m', order_items.created_at) AS order_items_created_month,
+        COALESCE(SUM(order_items.sale_price), 0) AS order_items_total_sale_price
+      FROM `order_items` AS order_items
+      GROUP BY 1
+      ORDER BY 1 DESC
+      LIMIT 500 ;;
+    # Optionally, use persistence if you want to cache results
+    # persist_for: "24 hours"
+    }
 
-      # The measure (aggregation)
-      column: total_sale_price { field: order_items.total_sale_price }
-      # NOTE: It's best practice to explicitly reference the original field here.
+    dimension: created_month {
+      type: string
+      sql: ${TABLE}.order_items_created_month ;;
+    }
+
+    measure: total_sale_price {
+      type: sum
+      sql: ${TABLE}.order_items_total_sale_price ;;
     }
   }
-
-  # --- Dimensions (GROUP BY columns) ---
-  dimension_group: created {
-    type: time
-    timeframes: [month]
-    sql: ${created_month} ;; # This refers to the column from the explore_source
-  }
-
-  # --- Measures (Aggregated results from the explore_source) ---
-  measure: total_monthly_sale {
-    description: "Total sales aggregated monthly (from the NDT)."
-    type: sum
-    sql: ${order_items.total_sale_price} ;; # SUM the pre-aggregated monthly total
-    value_format: "$#,##0"
-  }
-}
