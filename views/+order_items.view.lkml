@@ -30,30 +30,6 @@ view: +order_items {
     kind: previous
     value_format_name: usd_0
   }
-  measure: last_year_sales_styled {
-    label: "LAST YEAR SALES (STYLED)" # Title displayed on the dashboard tile
-    type: number
-    sql: ${LastYearSales} ;;          # Pulls the calculated value from the POP measure
-
-    html:
-    # Outer div uses flexbox to align the icon and text horizontally and center them vertically
-    '<div style="display:flex; align-items:center;">'
-      # Icon with specific dimensions and a small right margin for spacing
-      '<img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" width="20" height="20" style="margin-right:5px;">'
-
-      # Span for text styling: color and bold font
-      '<span style="color:#1E90FF; font-weight:bold;">'
-
-      # Liquid variable renders the value with the 'usd_0' format defined in the base measure
-      '{{ rendered_value }}'
-
-      '</span>'
-      '</div>'
-      ;;
-  }
-
-
-
 
 # Filter for user to select the MTD/QTD end date
   filter: mtd_anchor_date {
@@ -197,33 +173,4 @@ view: +order_items {
     value_format_name: usd
     description: "Sale price for selected period up to global date filter end (defaults to today: Oct 23, 2025)"
   }
-
-  measure: total_revenue {
-    label: "Total Revenue"
-    type: sum
-    sql: ${TABLE}.sale_price;;
-    value_format: "$#,##0.0,,\" K\"" # Optional: Keeps the K formatting
-
-    # --- Start of Custom HTML/Liquid ---
-    html: |
-          <div style="
-            background-color: #26a57c;        /* Green background for the main box */
-            color: white;                     /* White text for better contrast */
-            padding: 10px 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-bottom: 5px;
-          ">
-            <span style="font-size: 32px; font-weight: bold;">
-              {{ rendered_value }}
-            </span>
-          </div>
-          ;;
-        # --- End of Custom HTML/Liquid ---
-    }
-
-
-
-
-  }
+}
