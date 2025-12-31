@@ -53,6 +53,14 @@ view: +order_items {
     value_format_name: usd_0
     label: "Total Sales (MTD Dynamic)"
     description: "MTD total sales based on the selected end date or today if not selected"
+
+    synonyms: [
+      "month to date sales",
+      "mtd sales",
+      "current month sales",
+      "sales this month",
+      "total mtd sales"
+    ]
   }
 
 # Dynamic QTD measure for total sales up to the selected date
