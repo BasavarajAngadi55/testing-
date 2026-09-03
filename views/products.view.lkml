@@ -14,6 +14,12 @@ view: products {
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
+
+    link: {
+      label: "View Detailed Dashboard"
+      url: "/dashboards/2642?Category={{ value | url_encode }}"
+    }
+
   }
   dimension: cost {
     type: number
@@ -48,13 +54,13 @@ view: products {
   # ----- Sets of fields for drilling ------
   set: detail {
     fields: [
-	id,
-	name,
-	distribution_centers.name,
-	distribution_centers.id,
-	inventory_items.count,
-	order_items.count
-	]
+  id,
+  name,
+  distribution_centers.name,
+  distribution_centers.id,
+  inventory_items.count,
+  order_items.count
+  ]
   }
 
 }
